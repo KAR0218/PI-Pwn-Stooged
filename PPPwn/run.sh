@@ -1,5 +1,5 @@
 #!/bin/bash
-
+echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/unbind
 # raspberry pi ethernet interface
 INTERFACE="eth0" 
 
@@ -19,6 +19,7 @@ echo -e "\n\n\033[36m _____  _____  _____
 \n\033[33mhttps://github.com/TheOfficialFloW/PPPwn\033[0m\n"
 
 echo -e "\n\033[32mReady for console connection\033[92m\nFirmware:\033[93m $FIRMWAREVERSION\033[92m\nInterface:\033[93m $INTERFACE\033[0m\n"
+echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/bind
 while [ true ]
 do
 ret=$(sudo python3 /boot/firmware/PPPwn/pppwn.py --interface=$INTERFACE --fw=$FIRMWAREVERSION --stage1=/boot/firmware/PPPwn/pppwn.bin --stage2=/boot/firmware/PPPwn/stage2_$FIRMWAREVERSION.bin)
@@ -32,9 +33,8 @@ if [ $ret -ge 1 ]
         exit 1
    else
         echo -e "\033[31m\nFailed retrying...\033[0m\n"
-        sudo ip link set $INTERFACE down
-        sleep 4
-        sudo ip link set $INTERFACE up
+        echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/unbind
+	echo '1-1' | sudo tee /sys/bus/usb/drivers/usb/bind
 fi
 done
 
